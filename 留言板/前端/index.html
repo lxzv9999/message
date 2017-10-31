@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        textarea{
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+
+</head>
+<body>
+<textarea id="texta" name="" style="max-width: 300px;max-height: 300px;resize: none"></textarea>
+<input type="text" name="" id="ipt1">
+<button id="ipt2" value="提交">提交</button>
+
+<div id="div"></div>
+
+</body>
+</html>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js">
+    
+</script>
+<script>
+    fn();
+     $('#ipt2').click(function(){
+         var ipt=$('#ipt1').val();
+         var text=$('#texta').val();
+         $.ajax({
+             url:'http://localhost:3000/item/list',
+             type:'post',
+             dataType:'json',
+             data:{cc:ipt,bb:text},
+             success:function(e){
+                fn()
+             }
+         })
+     });
+    function fn(){
+        $.ajax({
+            url:'http://localhost:3000/item/detail',
+            type:'get',
+            dataType:"json",
+            success:function(e){
+                var ha='';
+                for(i in e){
+                    ha+='<div>'+e[i].name+'<p>'+e[i].content+'</p><span data-id='+e[i].id+'>删除</span></div>'
+                }
+                $('#div').html(ha);
+
+
+                $('span').click(function(){
+                    var id=$(this).attr('data-id');
+                    var _this=$(this);
+                    $.ajax({
+                        url:'http://localhost:3000/item/delete',
+                        type:'post',
+                        dataType:'json',
+                        data:{cc:id},
+                        success:function(e){
+                            console.log(e)
+                            _this.parent().remove()
+                        }
+                    });
+                })
+            }
+        })
+    }
+
+</script>
